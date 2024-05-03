@@ -1,0 +1,126 @@
+
+* {
+	box-sizing: border-box;
+}
+
+html {
+	font: 150%/1.4 system-ui, sans-serif;
+	background: floralwhite;
+}
+
+ul, li {
+	margin: 0;
+	padding: 0;
+	display: block;
+}
+
+#tarot {
+	margin: 4rem auto 4rem;
+	width: min(96%, 80ch);
+
+	display: grid;
+	grid-gap: 1rem;
+	grid-template-columns: 1fr 3fr 1fr;
+	grid-template-rows: 400px 1fr;
+}
+
+
+
+.card {
+	--scale: 3;
+	width: calc(40px * var(--scale));
+	height: calc(68px * var(--scale));
+	border: 1px solid #bbb;
+	background: white;
+	overflow: hidden;
+	border-radius: 0.25rem;
+}
+
+/*
+.card:hover .card-inner {
+	transform: rotateY(180deg);
+}
+*/
+
+.card .card-inner {
+	display: grid;
+	transition: transform 0.8s;
+	transform-style: preserve-3d;
+
+	height: 100%;
+}
+
+.card .front, .card .back {
+	grid-row-start: 1;
+	grid-column-start: 1;
+	backface-visibility: hidden;
+}
+
+.card .back {
+	background: url(./cardback.webp);
+	background-size: cover;
+	transform: rotateY(180deg);
+}
+
+.card img {
+	width: 100%;
+	height: auto;
+	object-fit: cover;
+}
+
+.card h2 {
+	display: none;
+}
+
+#deck {
+	position: relative;
+	grid-column-start: 1;
+	background: pink;
+	padding: 0.5rem;
+
+	display: grid;
+	grid-auto-rows: 5px;
+}
+
+#deck .card, 
+#graveyard .card {
+	width: 100%;
+	height: auto;
+	aspect-ratio: 600/988 auto;
+}
+
+#deck .card .card-inner, 
+#graveyard .card .card-inner {
+	transform: rotateY(180deg);
+}
+
+#graveyard {
+	grid-column-start: 3;
+	background: tan;
+
+	display: grid;
+	grid-auto-rows: 5px;
+}
+
+#hand {
+	grid-column-start: 2;
+	display: flex;
+	gap: 10px;
+	justify-content: center;
+	align-items: center;
+	background: lightyellow;
+}
+
+#hand .card {
+	width: calc(100% / 3);
+	height: auto;
+	aspect-ratio: 600/988 auto;
+}
+
+nav {
+	grid-row-start: 2;
+	grid-column-start: span 3;
+	display: flex;
+	gap: 1rem;
+	justify-content: center;
+}

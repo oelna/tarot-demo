@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width" />
+	<title>Tarot</title>
+
+	<link rel="stylesheet" href="tarot.css" />
+
+	<script src="https://unpkg.com/petite-vue@0.2.2/dist/petite-vue.iife.js"></script>
+	<script>
+
+		document.addEventListener('DOMContentLoaded', function (event) {
+
+			const imageDir = './cards/';
+
+			const cards = [
+				{
+					'title': 'The World',
+					'value': null,
+					'suit': null,
+					'reversed': false,
+					'meaning': {
+						'upright': 'Fulfillment, harmony, completion, integration, travel, and unity',
+						'reversed': '',
+						'yesno': null
+					},
+					'text': '',
+					'image': imageDir + 'the-world.jpg'
+				},
+				{
+					'title': 'Death',
+					'value': null,
+					'suit': null,
+					'reversed': false,
+					'meaning': {
+						'upright': '',
+						'reversed': '',
+						'yesno': null
+					},
+					'text': '',
+					'image': imageDir + 'death.jpg'
+				},
+				{
+					'title': 'Judgement',
+					'value': null,
+					'suit': null,
+					'reversed': false,
+					'meaning': {
+						'upright': '',
+						'reversed': '',
+						'yesno': null
+					},
+					'text': '',
+					'image': imageDir + 'judgement.jpg'
+				},
+				{
+					'title': 'Justice',
+					'value': null,
+					'suit': null,
+					'reversed': false,
+					'meaning': {
+						'upright': '',
+						'reversed': '',
+						'yesno': null
+					},
+					'text': '',
+					'image': imageDir + 'justice.jpg'
+				},
+				{
+					'title': 'Strength',
+					'value': null,
+					'suit': null,
+					'reversed': false,
+					'meaning': {
+						'upright': '',
+						'reversed': '',
+						'yesno': null
+					},
+					'text': '',
+					'image': imageDir + 'strength.jpg'
+				},
+				{
+					'title': 'Temperance',
+					'value': null,
+					'suit': null,
+					'reversed': false,
+					'meaning': {
+						'upright': '',
+						'reversed': '',
+						'yesno': null
+					},
+					'text': '',
+					'image': imageDir + 'temperance.jpg'
+				},
+			];
+
+			// const deck = [card, card, card];
+
+			const store = PetiteVue.reactive({
+				deck: [],
+				hand: [],
+				graveyard: [],
+				init () {
+
+					const self = this;
+					cards.forEach(function (card) { self.deck.push(card); });
+
+					//this.deck.push(card);
+				},
+				draw () {
+					if (this.deck.length < 1) return; // only draw with 1+ cards in deck
+					if (this.hand.length >= 3) return; // only draw 3 cards max
+
+					const card = this.deck.shift();
+					this.hand.push(card);
+				},
+				discard () {
+					const self = this;
+					this.hand.forEach(function (card) { self.graveyard.push(card); });
+					this.hand.length = 0;
+				},
+				shuffle () {
+					this.discard();
+
+					const self = this;
+					this.graveyard.forEach(function (card) { self.deck.push(card); });
+					this.graveyard.length = 0;
+
+					// shuffle (https://stackoverflow.com/a/2450976/3625228)
+					let currentIndex = this.deck.length;
+
+					while (currentIndex != 0) {
+						let randomIndex = Math.floor(Math.random() * currentIndex);
+						currentIndex--;
+
+						[this.deck[currentIndex], this.deck[randomIndex]] = [
+							this.deck[randomIndex],
+							this.deck[currentIndex]
+						];
+					}
+				},
+				
+			});
+
+			store.init();
+
+			PetiteVue.createApp({
+				store
+			}).mount('#tarot');
+
+		});
+	</script>
+</head>
+<body>
+
+	<div id="tarot" v-scope>
+		<ul id="deck">
+			<li class="card" v-for="(card, index) in store.deck" v-bind:style="{ 'z-index': index + 100 }">
+				<div class="card-inner">
+					<div class="front">
+						<img v-bind:src="card.image" v-bind:alt="card.title" />
+						<h2>{{ card.title }}</h2>
+					</div>
+					<div class="back"></div>
+				</div>
+			</li>
+		</ul>
+		<ul id="hand">
+			<li class="card" v-for="(card, index) in store.hand">
+				<div class="card-inner">
+					<div class="front">
+						<img v-bind:src="card.image" v-bind:alt="card.title" />
+						<h2>{{ card.title }}</h2>
+					</div>
+					<div class="back"></div>
+				</div>
+			</li>
+		</ul>
+		<ul id="graveyard">
+			<li class="card" v-for="(card, index) in store.graveyard" v-bind:style="{ 'z-index': 300 - index }" v-bind:key="card.image">
+				<div class="card-inner">
+					<div class="front">
+						<img v-bind:src="card.image" v-bind:alt="card.title" />
+						<h2>{{ card.title }}</h2>
+					</div>
+					<div class="back"></div>
+				</div>
+			</li>
+		</ul>
+
+		<nav>
+			<button v-on:click="store.draw()">Draw</button>
+			<button v-on:click="store.discard()">Discard</button>
+			<button v-on:click="store.shuffle()">Shuffle</button>
+		</nav>
+	</div>
+
+</body>
+</html>
